@@ -7,12 +7,19 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -28,8 +35,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
@@ -55,13 +64,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private GoogleMap mGoogleMap;
 
+    //GoogleApiClient mLocationClient;
+
     public static final int DEFAULT_ZOOM = 15;
-    private final double LAHORE_LNG= 73.051865;
-    private final double ISLAMABAD_LAT= 33.690904;
-    private final double ISLAMABAD_LNG= 73.051865;
 
     private ImageButton mBtnLocate;
     private EditText mSearchAddress;
+
+    private FusedLocationProviderClient mLocationClient;
+    private LocationCallback mLocationCallback;
+
+    public double dblCurLan, dblCurLang;
+    public Location newLocation;
+
+    private int intFlag = 1 ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,19 +97,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         //fab.setOnClickListener(view -> {
 
 
-            //if (mGoogleMap != null) {
-              //  double bottomBoundry = ISLAMABAD_LAT - 0.3;
-                //double leftBoundry = ISLAMABAD_LNG - 0.3;
-                //double topBoundry = ISLAMABAD_LAT + 0.3;
-                //double rightBoundry = ISLAMABAD_LNG + 0.3;
+        //if (mGoogleMap != null) {
+        //  double bottomBoundry = ISLAMABAD_LAT - 0.3;
+        //double leftBoundry = ISLAMABAD_LNG - 0.3;
+        //double topBoundry = ISLAMABAD_LAT + 0.3;
+        //double rightBoundry = ISLAMABAD_LNG + 0.3;
 
-                //LatLngBounds ISLAMABAD_BOUNDS = new LatLngBounds(
-                  //      new LatLng(bottomBoundry, leftBoundry),
-                    //    new LatLng(topBoundry, rightBoundry)
-                //);
-                //mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(ISLAMABAD_BOUNDS, 1));
-                //showMarker(ISLAMABAD_BOUNDS.getCenter());
-            //}
+        //LatLngBounds ISLAMABAD_BOUNDS = new LatLngBounds(
+        //      new LatLng(bottomBoundry, leftBoundry),
+        //    new LatLng(topBoundry, rightBoundry)
+        //);
+        //mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(ISLAMABAD_BOUNDS, 1));
+        //showMarker(ISLAMABAD_BOUNDS.getCenter());
+        //}
 
         //});
 
@@ -104,13 +120,57 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //SupportMapFragment supportMapFragment =SupportMapFragment.newInstance();
         //getSupportFragmentManager().beginTransaction()
-          //      .add(R.id.map_fragment_container,supportMapFragment)
-            //    .commit();
+        //      .add(R.id.map_fragment_container,supportMapFragment)
+        //    .commit();
 
         //supportMapFragment.getMapAsync(this);
 
+        //mLocationClient = new GoogleApiClient.Builder(this).addApi(LocationServices.API)
+        //      .addConnectionCallbacks(this)
+        //    .addOnConnectionFailedListener(this)
+        //  .build();
 
+        //mLocationClient.connect();
+        //mLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        mLocationClient = new FusedLocationProviderClient(this);
+        //getCurrentLocation();
 
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+
+                if (locationResult == null) {
+                    return;
+                }
+                Location location = locationResult.getLastLocation();
+                 Toast.makeText(MainActivity.this, location.getLatitude() + " \n" +
+                        location.getLongitude(), Toast.LENGTH_SHORT).show();
+
+                Log.d(TAG, "onLocationResult: " + location.getLatitude() + " \n" +
+                        location.getLongitude());
+
+                //dblCurLan = location.getLatitude();
+                //dblCurLang= location.getLongitude();
+                //dblCurLang= location.getLongitude();
+
+                setCurLoc(location.getLatitude(),location.getLongitude());
+
+                if(intFlag == 1) {
+                    gotoLocation(dblCurLan, dblCurLang);
+                    showMarker(dblCurLan, dblCurLang);
+                }
+                intFlag++;
+            }
+        };
+        getLocationUpdates();
+        //gotoLocation(dblCurLan,dblCurLang);
+        //showMarker(location.getLatitude(),location.getLongitude());
+    }
+
+    private void setCurLoc( double lat, double lng)
+    {
+        dblCurLan =lat;
+        dblCurLang = lng;
     }
 
     private void geoLocate(View view) {
@@ -132,12 +192,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 Toast.makeText(this, address.getLocality(), Toast.LENGTH_LONG).show();
 
-                Log.d(TAG, "geoLocate: Locality: " + address.getAddressLine(0) + ","  + address.getLocality() + "," + address.getSubLocality() + "," + address.getCountryName());
+                Log.d(TAG, "geoLocate: Locality: " + address.getAddressLine(0) + "," + address.getLocality() + "," + address.getSubLocality() + "," + address.getCountryName());
             }
 
             /*for (Address address : addressList) {
                 Log.d(TAG, "geoLocate: Address: " + address.getAddressLine(address.getMaxAddressLineIndex()));
             }*/
+            //getCurrentLocation();
 
 
         } catch (IOException e) {
@@ -149,6 +210,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void showMarker(double lat, double lng) {
+
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(new LatLng(lat, lng));
         mGoogleMap.addMarker(markerOptions);
@@ -170,6 +232,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             .findFragmentById(R.id.map_fragment_container);
 
                     supportMapFragment.getMapAsync(this);
+
+
                 } else {
                     requestLocationPermission();
                 }
@@ -178,29 +242,33 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Log.d(TAG, "onMapReady: map is showing on the screen");
 
-        mGoogleMap=googleMap;
-        gotoLocation(0,0);
+        mGoogleMap = googleMap;
+        gotoLocation(51.1657, 10.4515);
 
-        mGoogleMap.getUiSettings().setZoomControlsEnabled(true);
-        mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
-        mGoogleMap.getUiSettings().setMapToolbarEnabled(true);
+
+        //mGoogleMap.getUiSettings().setZoomControlsEnabled(true);
+        //mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
+        //mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
 
 
     }
 
-    private void gotoLocation(double lat,double lng){
+    private void gotoLocation(double lat, double lng) {
 
-        LatLng latLng=new LatLng(lat,lng);
+        if(lat > 0 && lng >0)
+        {
 
-        CameraUpdate cameraUpdate= CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM);
+        LatLng latLng = new LatLng(lat, lng);
+
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM);
 
         mGoogleMap.moveCamera(cameraUpdate);
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        }
 
     }
 
@@ -262,6 +330,37 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    private void getCurrentLocation() {
+
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+
+
+        mLocationClient.getLastLocation().addOnCompleteListener(task -> {
+
+            if (task.isSuccessful()) {
+                Location location = task.getResult();
+                gotoLocation(location.getLatitude(), location.getLongitude());
+                showMarker(location.getLatitude(), location.getLongitude());
+                dblCurLan = location.getLatitude();
+                dblCurLang = location.getLongitude();
+            } else {
+                Log.d(TAG, "getCurrentLocation: Error: " + task.getException().getMessage());
+            }
+        });
+
+
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -269,6 +368,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.current_location: {
+                //getCurrentLocation();
+                intFlag = 1;
+                getLocationUpdates();
+                break;
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
 
     @Override
@@ -295,11 +407,49 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             if (providerEnabled) {
                 Toast.makeText(this, "GPS is enabled", Toast.LENGTH_SHORT).show();
+                initGoogleMap();
             } else {
                 Toast.makeText(this, "GPS not enabled. Unable to show user location", Toast.LENGTH_SHORT).show();
             }
         }
     }
+
+    private void getLocationUpdates() {
+
+        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        locationRequest.setInterval(100);
+        locationRequest.setFastestInterval(100);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mLocationClient.requestLocationUpdates(locationRequest, mLocationCallback, Looper.getMainLooper());
+
+    }
+
+    //@Override
+    //public void onConnected(@Nullable Bundle bundle) {
+      //  Toast.makeText(this, "Connected to Location Services", Toast.LENGTH_SHORT).show();
+    //}
+
+    //@Override
+    //public void onConnectionSuspended(int i) {
+    //}
+
+    //@Override
+    //public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+     //   Toast.makeText(this, "Connection to Location Services failed", Toast.LENGTH_SHORT).show();
+    //}
+
+
 }
 
 
