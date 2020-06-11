@@ -5,6 +5,6 @@
     <item
         android:id="@+id/current_location"
         android:orderInCategory="1"
-        android:title="Current Location"
+        android:title="Your Location"
         app:showAsAction="always" />
 </menu>

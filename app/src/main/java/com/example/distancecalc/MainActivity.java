@@ -63,22 +63,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean mLocationPermissionGranted;
     public static final int GPS_REQUEST_CODE = 9003;
     public static final String TAG = "MapDebug";
-
     private GoogleMap mGoogleMap;
-
-    //GoogleApiClient mLocationClient;
-
     public static final int DEFAULT_ZOOM = 15;
-
     private ImageButton mBtnLocate;
     private EditText mSearchAddress;
     private TextView mTxtDistance, mTxtCurLoc, mTxtSerLoc;
-
     private FusedLocationProviderClient mLocationClient;
     private LocationCallback mLocationCallback;
-
     public double dblCurLan, dblCurLang, dblSerLan, dblSerLang;
-
     private int intFlag = 1 ;
 
     @Override
@@ -90,77 +82,26 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mSearchAddress = findViewById(R.id.et_address);
         mBtnLocate = findViewById(R.id.btn_locate);
         mBtnLocate.setOnClickListener(this::geoLocate);
-
-        //FloatingActionButton fab = findViewById(R.id.fab);
-
-
-        //fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show());
-
-        //fab.setOnClickListener(view -> {
-
-
-        //if (mGoogleMap != null) {
-        //  double bottomBoundry = ISLAMABAD_LAT - 0.3;
-        //double leftBoundry = ISLAMABAD_LNG - 0.3;
-        //double topBoundry = ISLAMABAD_LAT + 0.3;
-        //double rightBoundry = ISLAMABAD_LNG + 0.3;
-
-        //LatLngBounds ISLAMABAD_BOUNDS = new LatLngBounds(
-        //      new LatLng(bottomBoundry, leftBoundry),
-        //    new LatLng(topBoundry, rightBoundry)
-        //);
-        //mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(ISLAMABAD_BOUNDS, 1));
-        //showMarker(ISLAMABAD_BOUNDS.getCenter());
-        //}
-
-        //});
-
         initGoogleMap();
-
-        //SupportMapFragment supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment_container);
-        //supportMapFragment.getMapAsync((OnMapReadyCallback) this);
-
-        //SupportMapFragment supportMapFragment =SupportMapFragment.newInstance();
-        //getSupportFragmentManager().beginTransaction()
-        //      .add(R.id.map_fragment_container,supportMapFragment)
-        //    .commit();
-
-        //supportMapFragment.getMapAsync(this);
-
-        //mLocationClient = new GoogleApiClient.Builder(this).addApi(LocationServices.API)
-        //      .addConnectionCallbacks(this)
-        //    .addOnConnectionFailedListener(this)
-        //  .build();
-
-        //mLocationClient.connect();
-        //mLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mLocationClient = new FusedLocationProviderClient(this);
-        //getCurrentLocation();
-
+        mTxtCurLoc = findViewById(R.id.txtCurLoc);
+        mTxtCurLoc.setText(Html.fromHtml("<strong>Your Location Details</strong>" ));
+        mTxtSerLoc = findViewById(R.id.txtSerLoc);
+        mTxtSerLoc.setText(Html.fromHtml("<strong>Searched Location Details</strong>" ));
         mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
-
                 if (locationResult == null) {
                     return;
                 }
                 Location location = locationResult.getLastLocation();
 
-                 Toast.makeText(MainActivity.this, location.getLatitude() + " \n" +
-                        location.getLongitude(), Toast.LENGTH_SHORT).show();
-
-                Log.d(TAG, "onLocationResult: " + location.getLatitude() + " \n" +
-                        location.getLongitude());
-
-                //dblCurLan = location.getLatitude();
-                //dblCurLang= location.getLongitude();
-                //dblCurLang= location.getLongitude();
-
                 setCurLoc(location.getLatitude(),location.getLongitude());
-
-
-
                 if(intFlag == 1) {
+                    //Toast.makeText(MainActivity.this, location.getLatitude() + " \n" +
+                     //       location.getLongitude(), Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "onLocationResult: " + location.getLatitude() + " \n" +
+                            location.getLongitude());
                     gotoLocation(dblCurLan, dblCurLang);
                     showMarker(dblCurLan, dblCurLang);
                     getAddress(dblCurLan, dblCurLang);
@@ -169,8 +110,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         };
         getLocationUpdates();
-        //gotoLocation(dblCurLan,dblCurLang);
-        //showMarker(location.getLatitude(),location.getLongitude());
     }
 
     private void setCurLoc( double lat, double lng)
@@ -190,7 +129,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Geocoder geocoder;
         List<Address> addresses = null;
         geocoder = new Geocoder(this, Locale.getDefault());
-
         try {
         addresses = geocoder.getFromLocation(lat, lng, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
         } catch (IOException e) {
@@ -200,7 +138,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         String curState = addresses.get(0).getAdminArea();
         String curCountry = addresses.get(0).getCountryName();
         String curPostalCode = addresses.get(0).getPostalCode();
-
         mTxtCurLoc = findViewById(R.id.txtCurLoc);
         mTxtCurLoc.setText(Html.fromHtml("<strong>Your Location Details</strong><br>Address : <strong>" + curAddress +"</strong><br>"+
                 "Postal Code: <strong>" + curPostalCode + "</strong> <br>"+
@@ -211,97 +148,62 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void getDistanceBetweenTwoPoints(double lat1,double lon1,double lat2,double lon2) {
         mTxtDistance = findViewById(R.id.txtDistance);
-        //double theta = lon1 - lon2;
-        //double dist = Math.sin(deg2rad(lat1))
-          //      * Math.sin(deg2rad(lat2))
-            //    + Math.cos(deg2rad(lat1))
-              //  * Math.cos(deg2rad(lat2))
-               // * Math.cos(deg2rad(theta));
-        //dist = Math.acos(dist);
-        //dist = rad2deg(dist);
-        //dist = dist * 60 * 1.1515;
-
         double pk = (double) (180.f/Math.PI);
-
         double a1 = lat1 / pk;
         double a2 = lon1 / pk;
         double b1 = lat2 / pk;
         double b2 = lon2 / pk;
-
         double t1 = Math.cos(a1) * Math.cos(a2) * Math.cos(b1) * Math.cos(b2);
         double t2 = Math.cos(a1) * Math.sin(a2) * Math.cos(b1) * Math.sin(b2);
         double t3 = Math.sin(a1) * Math.sin(b1);
         double tt = Math.acos(t1 + t2 + t3);
-
-        //return 6366000 * tt;
-        mTxtDistance.setText(Html.fromHtml("<strong>" + (6366000 * tt)/1000 +" Kilometers </strong>"));
-    }
-
-    private double deg2rad(double deg) {
-        return (deg * Math.PI / 180.0);
-    }
-
-    private double rad2deg(double rad) {
-        return (rad * 180.0 / Math.PI);
+        mTxtDistance.setText(Html.fromHtml("<strong>" + String.format("%.2f",(6366000 * tt)/1000 )+" Kilometers </strong>"));
     }
 
     private void geoLocate(View view) {
         hideSoftKeyboard(view);
-
         String locationName = mSearchAddress.getText().toString();
 
         Geocoder geocoder = new Geocoder(this, Locale.GERMANY);
-
         try {
+            if(locationName.length() >= 3){
             List<Address> addressList = geocoder.getFromLocationName(locationName, 1);
-
             if (addressList.size() > 0) {
                 Address address = addressList.get(0);
-
                 gotoLocation(address.getLatitude(), address.getLongitude());
-
                 showMarker(address.getLatitude(), address.getLongitude());
-
                 setSerLoc(address.getLatitude(), address.getLongitude());
-
                 Toast.makeText(this, address.getLocality(), Toast.LENGTH_LONG).show();
-
                 String SerAddress = address.getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
                 String SerCity = address.getLocality();
                 String SerState = address.getAdminArea();
                 String SerCountry = address.getCountryName();
                 String SerPostalCode = address.getPostalCode();
-
                 mTxtSerLoc = findViewById(R.id.txtSerLoc);
-                mTxtSerLoc.setText(Html.fromHtml("<strong>Searched Location Details</strong><br>Address : <strong>" + SerAddress +"</strong><br>"+
-                        "Postal Code: <strong>" + SerPostalCode + "</strong> <br>"+
-                        "City: <strong>" + SerCity + "</strong> <br>"+
-                        "State: <strong>" + SerState + "</strong> <br>"+
-                        "Country: <strong>" + SerCountry + "</strong>" ));
-
-
-
-                getDistanceBetweenTwoPoints(dblCurLan,dblCurLang,dblSerLan,dblSerLang);
-
+                mTxtSerLoc.setText(Html.fromHtml("<strong>Searched Location Details</strong><br>Address : <strong>" + SerAddress + "</strong><br>" +
+                        "Postal Code: <strong>" + SerPostalCode + "</strong> <br>" +
+                        "City: <strong>" + SerCity + "</strong> <br>" +
+                        "State: <strong>" + SerState + "</strong> <br>" +
+                        "Country: <strong>" + SerCountry + "</strong>"));
+                getDistanceBetweenTwoPoints(dblCurLan, dblCurLang, dblSerLan, dblSerLang);
                 Log.d(TAG, "geoLocate: Locality: " + address.getAddressLine(0) + "," + address.getLocality() + "," + address.getSubLocality() + "," + address.getCountryName());
             }
 
-            /*for (Address address : addressList) {
-                Log.d(TAG, "geoLocate: Address: " + address.getAddressLine(address.getMaxAddressLineIndex()));
-            }*/
-            //getCurrentLocation();
+            }
+            else{
+                Toast.makeText(MainActivity.this,
+                        "Please enter valid location address.", Toast.LENGTH_LONG).show();
+               // AlertDialog alertDialog = new AlertDialog.Builder(this)
+                //        .setTitle("Valid Location")
+                //        .setMessage("Please enter valid location address.")
 
-
+                     //   .show();
+            }
         } catch (IOException e) {
-
-
         }
-
-
     }
 
     private void showMarker(double lat, double lng) {
-
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(new LatLng(lat, lng));
         mGoogleMap.addMarker(markerOptions);
@@ -313,18 +215,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void initGoogleMap() {
-
         if (isServicesOk()) {
             if (isGPSEnabled()) {
                 if (checkLocationPermission()) {
                     Toast.makeText(this, "Ready to Map", Toast.LENGTH_SHORT).show();
-
                     SupportMapFragment supportMapFragment = (SupportMapFragment) getSupportFragmentManager()
                             .findFragmentById(R.id.map_fragment_container);
-
                     supportMapFragment.getMapAsync(this);
-
-
                 } else {
                     requestLocationPermission();
                 }
@@ -336,43 +233,26 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Log.d(TAG, "onMapReady: map is showing on the screen");
-
         mGoogleMap = googleMap;
         gotoLocation(51.1657, 10.4515);
-
-
-        //mGoogleMap.getUiSettings().setZoomControlsEnabled(true);
-        //mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
-        //mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
-
-
     }
 
     private void gotoLocation(double lat, double lng) {
-
         if(lat > 0 && lng >0)
         {
-
         LatLng latLng = new LatLng(lat, lng);
-
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM);
-
         mGoogleMap.moveCamera(cameraUpdate);
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         }
-
     }
 
     private boolean isGPSEnabled() {
-
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
         boolean providerEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-
         if (providerEnabled) {
             return true;
         } else {
-
             AlertDialog alertDialog = new AlertDialog.Builder(this)
                     .setTitle("GPS Permissions")
                     .setMessage("GPS is required for this app to work. Please enable GPS.")
@@ -382,24 +262,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }))
                     .setCancelable(false)
                     .show();
-
         }
-
         return false;
     }
 
     private boolean checkLocationPermission() {
-
         return ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED;
     }
 
     private boolean isServicesOk() {
-
         GoogleApiAvailability googleApi = GoogleApiAvailability.getInstance();
-
         int result = googleApi.isGooglePlayServicesAvailable(this);
-
         if (result == ConnectionResult.SUCCESS) {
             return true;
         } else if (googleApi.isUserResolvableError(result)) {
@@ -421,41 +295,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    private void getCurrentLocation() {
-
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-
-
-        mLocationClient.getLastLocation().addOnCompleteListener(task -> {
-
-            if (task.isSuccessful()) {
-                Location location = task.getResult();
-                gotoLocation(location.getLatitude(), location.getLongitude());
-                showMarker(location.getLatitude(), location.getLongitude());
-                dblCurLan = location.getLatitude();
-                dblCurLang = location.getLongitude();
-            } else {
-                Log.d(TAG, "getCurrentLocation: Error: " + task.getException().getMessage());
-            }
-        });
-
-
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+       getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -464,7 +306,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         int id = item.getItemId();
         switch (id) {
             case R.id.current_location: {
-                //getCurrentLocation();
                 intFlag = 1;
                 getLocationUpdates();
                 break;
@@ -489,13 +330,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == GPS_REQUEST_CODE) {
-
             LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
             boolean providerEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-
             if (providerEnabled) {
                 Toast.makeText(this, "GPS is enabled", Toast.LENGTH_SHORT).show();
                 initGoogleMap();
@@ -506,12 +343,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void getLocationUpdates() {
-
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         locationRequest.setInterval(100);
         locationRequest.setFastestInterval(100);
-
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -523,163 +358,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             return;
         }
         mLocationClient.requestLocationUpdates(locationRequest, mLocationCallback, Looper.getMainLooper());
-
     }
-
-    //@Override
-    //public void onConnected(@Nullable Bundle bundle) {
-      //  Toast.makeText(this, "Connected to Location Services", Toast.LENGTH_SHORT).show();
-    //}
-
-    //@Override
-    //public void onConnectionSuspended(int i) {
-    //}
-
-    //@Override
-    //public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-     //   Toast.makeText(this, "Connection to Location Services failed", Toast.LENGTH_SHORT).show();
-    //}
-
-
 }
-
-
-    /*private void geoLocate(View view) {
-        hideSoftKeyboard(view);
-        String locationName = mSearchAddress.getText().toString();
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-
-
-
-        try {
-          List<Address> addressList = geocoder.getFromLocationName(locationName,1);
-
-            if (addressList.size() > 0) {
-                Address address = addressList.get(0);
-
-                gotoLocation(address.getLatitude(), address.getLongitude());
-
-                mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(address.getLatitude(), address.getLongitude())));
-                Toast.makeText(this, address.getLocality(), Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "geoLocate: Locality: " + address.getLocality());
-            }
-        }catch (IOException e){
-
-        }
-
-    }
-
-    private void hideSoftKeyboard(View view){
-        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
-
-    private void showMarker(double lat, double lng) {
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(new LatLng(lat, lng));
-        mGoogleMap.addMarker(markerOptions);
-    }
-
-    private void gotoLocation(double lat,double lng){
-        LatLng latLng=new LatLng(lat,lng);
-        CameraUpdate cameraUpdate= CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM);
-        mGoogleMap.moveCamera(cameraUpdate);
-    }
-
-
-
-
-    private void initGoogleMap() {
-        if(isServicesOk()){
-            if(checkLocationPermission()){
-                Toast.makeText(this, "Ready to Map", Toast.LENGTH_SHORT).show();
-            }else{
-                requestLocationPermission();
-            }
-        }
-    }
-
-    private boolean checkLocationPermission() {
-
-        return ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED;
-
-    }
-
-        private boolean isServicesOk() {
-
-            GoogleApiAvailability googleApi = GoogleApiAvailability.getInstance();
-            int result= googleApi.isGooglePlayServicesAvailable(this);
-            if(result == ConnectionResult.SUCCESS){
-                return true;
-            }else if(googleApi.isUserResolvableError(result)){
-                Dialog dialog=googleApi.getErrorDialog(this,result,PLAY_SERVICES_ERROR_CODE, task->
-                        Toast.makeText(this, "Dialog is cancelled by User", Toast.LENGTH_SHORT).show());
-                dialog.show();
-            }else{
-                Toast.makeText(this, "Play services are required by this application", Toast.LENGTH_SHORT).show();
-            }
-
-            return false;
-    }
-
-    private void requestLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
-            }
-        }
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if(requestCode == PERMISSION_REQUEST_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-            mLocationPermissionGranted=true;
-            Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
-        }else{
-            Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        Log.d(TAG, "onMapReady: map is showing on the screen");
-
-        mGoogleMap=googleMap;
-        gotoLocation(ISLAMABAD_LAT,ISLAMABAD_LNG);
-
-        MarkerOptions markerOptions=new MarkerOptions()
-                .title("My Market")
-                .position(new LatLng(0,0));
-
-        mGoogleMap.addMarker(markerOptions);
-    }*/
-
 
 //AIzaSyCRKQXgM_IBOjLkarOzziGCeCr0Xu48Fgk

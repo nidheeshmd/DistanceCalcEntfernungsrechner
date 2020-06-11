@@ -26,7 +26,11 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:background="@drawable/oval"
+        android:padding="7dp"
+        android:paddingStart="14dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingLeft="14dp" />
 
     <ImageButton
         android:id="@+id/btn_locate"
@@ -39,6 +43,9 @@
         app:layout_constraintBottom_toTopOf="@+id/map_fragment_container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/ovalbtn"
+        android:padding="6dp"
+
         android:layout_marginRight="8dp" />
 
     <fragment
@@ -55,13 +62,14 @@
         app:layout_constraintBottom_toTopOf="@+id/txtDistance"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_address"></fragment>
+        app:layout_constraintTop_toBottomOf="@+id/et_address"
+        ></fragment>
 
 
     <TextView
         android:id="@+id/txtDistance"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="50dp"
         android:text="00.00 Kilometers"
         android:textSize="30sp"
         android:textAlignment="center"
@@ -72,15 +80,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.575"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
         android:layout_marginBottom="8dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginLeft="8dp"
         android:gravity="center" />
     
     <TextView
         android:id="@+id/txtCurLoc"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="115dp"
         android:text="Current Location"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/txtDistance"
@@ -88,32 +98,35 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.370"
+        app:layout_constraintVertical_bias="1.440"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
         android:layout_marginBottom="8dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginLeft="8dp"
         />
 
-    <TextView
-        android:id="@+id/txtSerLoc"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:text="Destination Address"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@+id/txtCurLoc"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.250"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        />
+        <TextView
+            android:id="@+id/txtSerLoc"
+            android:layout_width="match_parent"
+            android:layout_height="115dp"
+            android:text="Destination Address"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/txtCurLoc"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.320"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginLeft="8dp" />
 
 
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
