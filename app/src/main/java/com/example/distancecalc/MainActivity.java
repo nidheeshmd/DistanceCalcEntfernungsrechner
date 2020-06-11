@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -86,8 +87,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mLocationClient = new FusedLocationProviderClient(this);
         mTxtCurLoc = findViewById(R.id.txtCurLoc);
         mTxtCurLoc.setText(Html.fromHtml("<strong>Your Location Details</strong>" ));
+        mTxtCurLoc.setTextColor(Color.parseColor("#3867d6"));
         mTxtSerLoc = findViewById(R.id.txtSerLoc);
         mTxtSerLoc.setText(Html.fromHtml("<strong>Searched Location Details</strong>" ));
+        mTxtSerLoc.setTextColor(Color.parseColor("#3867d6"));
+        mTxtDistance = findViewById(R.id.txtDistance);
+        mTxtDistance.setText(Html.fromHtml("<strong> 00.00 Kilometers </strong>"));
+        mTxtDistance.setTextColor(Color.parseColor("#ffffff"));
+
         mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
