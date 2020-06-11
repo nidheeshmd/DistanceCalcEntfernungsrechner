@@ -40,6 +40,7 @@ import androidx.core.content.ContextCompat;
 
 import android.os.Looper;
 import android.provider.Settings;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 
@@ -48,6 +49,7 @@ import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -70,12 +72,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private ImageButton mBtnLocate;
     private EditText mSearchAddress;
+    private TextView mTxtDistance, mTxtCurLoc, mTxtSerLoc;
 
     private FusedLocationProviderClient mLocationClient;
     private LocationCallback mLocationCallback;
 
-    public double dblCurLan, dblCurLang;
-    public Location newLocation;
+    public double dblCurLan, dblCurLang, dblSerLan, dblSerLang;
 
     private int intFlag = 1 ;
 
@@ -143,6 +145,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     return;
                 }
                 Location location = locationResult.getLastLocation();
+
                  Toast.makeText(MainActivity.this, location.getLatitude() + " \n" +
                         location.getLongitude(), Toast.LENGTH_SHORT).show();
 
@@ -155,9 +158,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 setCurLoc(location.getLatitude(),location.getLongitude());
 
+
+
                 if(intFlag == 1) {
                     gotoLocation(dblCurLan, dblCurLang);
                     showMarker(dblCurLan, dblCurLang);
+                    getAddress(dblCurLan, dblCurLang);
                 }
                 intFlag++;
             }
@@ -171,6 +177,72 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     {
         dblCurLan =lat;
         dblCurLang = lng;
+    }
+
+    private void setSerLoc(double lat, double lng)
+    {
+        dblSerLan =lat;
+        dblSerLang = lng;
+    }
+
+    private void getAddress(double lat, double lng)
+    {
+        Geocoder geocoder;
+        List<Address> addresses = null;
+        geocoder = new Geocoder(this, Locale.getDefault());
+
+        try {
+        addresses = geocoder.getFromLocation(lat, lng, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+        } catch (IOException e) {
+        }
+        String curAddress = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+        String curCity = addresses.get(0).getLocality();
+        String curState = addresses.get(0).getAdminArea();
+        String curCountry = addresses.get(0).getCountryName();
+        String curPostalCode = addresses.get(0).getPostalCode();
+
+        mTxtCurLoc = findViewById(R.id.txtCurLoc);
+        mTxtCurLoc.setText(Html.fromHtml("<strong>Your Location Details</strong><br>Address : <strong>" + curAddress +"</strong><br>"+
+                "Postal Code: <strong>" + curPostalCode + "</strong> <br>"+
+                "City: <strong>" + curCity + "</strong> <br>"+
+                "State: <strong>" + curState + "</strong> <br>"+
+                "Country: <strong>" + curCountry + "</strong>" ));
+    }
+
+    private void getDistanceBetweenTwoPoints(double lat1,double lon1,double lat2,double lon2) {
+        mTxtDistance = findViewById(R.id.txtDistance);
+        //double theta = lon1 - lon2;
+        //double dist = Math.sin(deg2rad(lat1))
+          //      * Math.sin(deg2rad(lat2))
+            //    + Math.cos(deg2rad(lat1))
+              //  * Math.cos(deg2rad(lat2))
+               // * Math.cos(deg2rad(theta));
+        //dist = Math.acos(dist);
+        //dist = rad2deg(dist);
+        //dist = dist * 60 * 1.1515;
+
+        double pk = (double) (180.f/Math.PI);
+
+        double a1 = lat1 / pk;
+        double a2 = lon1 / pk;
+        double b1 = lat2 / pk;
+        double b2 = lon2 / pk;
+
+        double t1 = Math.cos(a1) * Math.cos(a2) * Math.cos(b1) * Math.cos(b2);
+        double t2 = Math.cos(a1) * Math.sin(a2) * Math.cos(b1) * Math.sin(b2);
+        double t3 = Math.sin(a1) * Math.sin(b1);
+        double tt = Math.acos(t1 + t2 + t3);
+
+        //return 6366000 * tt;
+        mTxtDistance.setText(Html.fromHtml("<strong>" + (6366000 * tt)/1000 +" Kilometers </strong>"));
+    }
+
+    private double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    private double rad2deg(double rad) {
+        return (rad * 180.0 / Math.PI);
     }
 
     private void geoLocate(View view) {
@@ -190,7 +262,26 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 showMarker(address.getLatitude(), address.getLongitude());
 
+                setSerLoc(address.getLatitude(), address.getLongitude());
+
                 Toast.makeText(this, address.getLocality(), Toast.LENGTH_LONG).show();
+
+                String SerAddress = address.getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                String SerCity = address.getLocality();
+                String SerState = address.getAdminArea();
+                String SerCountry = address.getCountryName();
+                String SerPostalCode = address.getPostalCode();
+
+                mTxtSerLoc = findViewById(R.id.txtSerLoc);
+                mTxtSerLoc.setText(Html.fromHtml("<strong>Searched Location Details</strong><br>Address : <strong>" + SerAddress +"</strong><br>"+
+                        "Postal Code: <strong>" + SerPostalCode + "</strong> <br>"+
+                        "City: <strong>" + SerCity + "</strong> <br>"+
+                        "State: <strong>" + SerState + "</strong> <br>"+
+                        "Country: <strong>" + SerCountry + "</strong>" ));
+
+
+
+                getDistanceBetweenTwoPoints(dblCurLan,dblCurLang,dblSerLan,dblSerLang);
 
                 Log.d(TAG, "geoLocate: Locality: " + address.getAddressLine(0) + "," + address.getLocality() + "," + address.getSubLocality() + "," + address.getCountryName());
             }
