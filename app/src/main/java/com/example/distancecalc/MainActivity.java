@@ -85,16 +85,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mBtnLocate.setOnClickListener(this::geoLocate);
         initGoogleMap();
         mLocationClient = new FusedLocationProviderClient(this);
-        mTxtCurLoc = findViewById(R.id.txtCurLoc);
-        mTxtCurLoc.setText(Html.fromHtml("<strong>Your Location Details</strong>" ));
-        mTxtCurLoc.setTextColor(Color.parseColor("#3867d6"));
-        mTxtSerLoc = findViewById(R.id.txtSerLoc);
-        mTxtSerLoc.setText(Html.fromHtml("<strong>Searched Location Details</strong>" ));
-        mTxtSerLoc.setTextColor(Color.parseColor("#3867d6"));
-        mTxtDistance = findViewById(R.id.txtDistance);
-        mTxtDistance.setText(Html.fromHtml("<strong> 00.00 Kilometers </strong>"));
-        mTxtDistance.setTextColor(Color.parseColor("#ffffff"));
 
+clearText();
         mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -105,8 +97,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 setCurLoc(location.getLatitude(),location.getLongitude());
                 if(intFlag == 1) {
-                    //Toast.makeText(MainActivity.this, location.getLatitude() + " \n" +
-                     //       location.getLongitude(), Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "onLocationResult: " + location.getLatitude() + " \n" +
                             location.getLongitude());
                     gotoLocation(dblCurLan, dblCurLang);
@@ -119,6 +109,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         getLocationUpdates();
     }
 
+    private void clearText()
+    {
+        mTxtCurLoc = findViewById(R.id.txtCurLoc);
+        mTxtCurLoc.setText(Html.fromHtml("<strong></strong>" ));
+        mTxtCurLoc.setTextColor(Color.parseColor("#3867d6"));
+        mTxtSerLoc = findViewById(R.id.txtSerLoc);
+        mTxtSerLoc.setText(Html.fromHtml("<strong></strong>" ));
+        mTxtSerLoc.setTextColor(Color.parseColor("#3867d6"));
+        mTxtDistance = findViewById(R.id.txtDistance);
+        mTxtDistance.setText(Html.fromHtml("<strong> 00.00 Kilometers </strong>"));
+        mTxtDistance.setTextColor(Color.parseColor("#3867d6"));
+    }
     private void setCurLoc( double lat, double lng)
     {
         dblCurLan =lat;
@@ -200,11 +202,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             else{
                 Toast.makeText(MainActivity.this,
                         "Please enter valid location address.", Toast.LENGTH_LONG).show();
-               // AlertDialog alertDialog = new AlertDialog.Builder(this)
-                //        .setTitle("Valid Location")
-                //        .setMessage("Please enter valid location address.")
-
-                     //   .show();
             }
         } catch (IOException e) {
         }
@@ -235,8 +232,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         }
     }
-
-
+    
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Log.d(TAG, "onMapReady: map is showing on the screen");
@@ -314,7 +310,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         switch (id) {
             case R.id.current_location: {
                 intFlag = 1;
+                clearText();
                 getLocationUpdates();
+
                 break;
             }
         }
