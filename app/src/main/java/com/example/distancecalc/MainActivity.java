@@ -112,10 +112,18 @@ clearText();
     private void clearText()
     {
         mTxtCurLoc = findViewById(R.id.txtCurLoc);
-        mTxtCurLoc.setText(Html.fromHtml("<strong></strong>" ));
+        mTxtCurLoc.setText(Html.fromHtml("<strong>Your Location Details</strong><br>Address : <strong> -- </strong><br>" +
+                "Postal Code: <strong> -- </strong> <br>" +
+                "City: <strong> -- </strong> <br>" +
+                "State: <strong> -- </strong> <br>" +
+                "Country: <strong>--</strong>" ));
         mTxtCurLoc.setTextColor(Color.parseColor("#3867d6"));
         mTxtSerLoc = findViewById(R.id.txtSerLoc);
-        mTxtSerLoc.setText(Html.fromHtml("<strong></strong>" ));
+        mTxtSerLoc.setText(Html.fromHtml("<strong>Searched Location Details</strong><br>Address : <strong> -- </strong><br>" +
+                "Postal Code: <strong> -- </strong> <br>" +
+                "City: <strong> -- </strong> <br>" +
+                "State: <strong> -- </strong> <br>" +
+                "Country: <strong>--</strong>" ));
         mTxtSerLoc.setTextColor(Color.parseColor("#3867d6"));
         mTxtDistance = findViewById(R.id.txtDistance);
         mTxtDistance.setText(Html.fromHtml("<strong> 00.00 Kilometers </strong>"));
@@ -228,11 +236,12 @@ clearText();
                     supportMapFragment.getMapAsync(this);
                 } else {
                     requestLocationPermission();
+                    initGoogleMap();
                 }
             }
         }
     }
-    
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Log.d(TAG, "onMapReady: map is showing on the screen");
