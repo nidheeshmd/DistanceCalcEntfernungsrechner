@@ -114,14 +114,12 @@ clearText();
         mTxtCurLoc = findViewById(R.id.txtCurLoc);
         mTxtCurLoc.setText(Html.fromHtml("<strong>Your Location Details</strong><br>Address : <strong> -- </strong><br>" +
                 "Postal Code: <strong> -- </strong> <br>" +
-                "City: <strong> -- </strong> <br>" +
                 "State: <strong> -- </strong> <br>" +
                 "Country: <strong>--</strong>" ));
         mTxtCurLoc.setTextColor(Color.parseColor("#3867d6"));
         mTxtSerLoc = findViewById(R.id.txtSerLoc);
         mTxtSerLoc.setText(Html.fromHtml("<strong>Searched Location Details</strong><br>Address : <strong> -- </strong><br>" +
                 "Postal Code: <strong> -- </strong> <br>" +
-                "City: <strong> -- </strong> <br>" +
                 "State: <strong> -- </strong> <br>" +
                 "Country: <strong>--</strong>" ));
         mTxtSerLoc.setTextColor(Color.parseColor("#3867d6"));
@@ -151,16 +149,16 @@ clearText();
         } catch (IOException e) {
         }
         if(addresses.size()>0) {
-            String curAddress = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+            String curAddress =addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
             String curCity = addresses.get(0).getLocality();
             String curState = addresses.get(0).getAdminArea();
             String curCountry = addresses.get(0).getCountryName();
             String curPostalCode = addresses.get(0).getPostalCode();
             mTxtCurLoc = findViewById(R.id.txtCurLoc);
             mTxtCurLoc.setText(Html.fromHtml("<strong>Your Location Details</strong><br>Address : <strong>" + curAddress + "</strong><br>" +
-                    "Postal Code: <strong>" + curPostalCode + "</strong> <br>" +
+                    "Postal Code: <strong>" + curPostalCode + "</strong> ," +
                     "City: <strong>" + curCity + "</strong> <br>" +
-                    "State: <strong>" + curState + "</strong> <br>" +
+                    "State: <strong>" + curState + "</strong> ," +
                     "Country: <strong>" + curCountry + "</strong>"));
         }
         else {
@@ -203,9 +201,9 @@ clearText();
                 String SerPostalCode = address.getPostalCode();
                 mTxtSerLoc = findViewById(R.id.txtSerLoc);
                 mTxtSerLoc.setText(Html.fromHtml("<strong>Searched Location Details</strong><br>Address : <strong>" + SerAddress + "</strong><br>" +
-                        "Postal Code: <strong>" + SerPostalCode + "</strong> <br>" +
+                        "Postal Code: <strong>" + SerPostalCode + "</strong>, " +
                         "City: <strong>" + SerCity + "</strong> <br>" +
-                        "State: <strong>" + SerState + "</strong> <br>" +
+                        "State: <strong>" + SerState + "</strong> ," +
                         "Country: <strong>" + SerCountry + "</strong>"));
                 getDistanceBetweenTwoPoints(dblCurLan, dblCurLang, dblSerLan, dblSerLang);
                 Log.d(TAG, "geoLocate: Locality: " + address.getAddressLine(0) + "," + address.getLocality() + "," + address.getSubLocality() + "," + address.getCountryName());
@@ -303,11 +301,19 @@ clearText();
         return false;
     }
 
-    private void requestLocationPermission() {
+    /*private void requestLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
+               requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
+            }
+        }
+    }*/
+
+    private void requestLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
             }
         }
     }
@@ -334,7 +340,7 @@ clearText();
     }
 
 
-    @Override
+    /*@Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
@@ -343,6 +349,21 @@ clearText();
             Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show();
+        }
+    }*/
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mLocationPermissionGranted = true;
+                    Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show();
+                }
+                break;
         }
     }
 
