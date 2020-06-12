@@ -150,17 +150,22 @@ clearText();
         addresses = geocoder.getFromLocation(lat, lng, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
         } catch (IOException e) {
         }
-        String curAddress = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-        String curCity = addresses.get(0).getLocality();
-        String curState = addresses.get(0).getAdminArea();
-        String curCountry = addresses.get(0).getCountryName();
-        String curPostalCode = addresses.get(0).getPostalCode();
-        mTxtCurLoc = findViewById(R.id.txtCurLoc);
-        mTxtCurLoc.setText(Html.fromHtml("<strong>Your Location Details</strong><br>Address : <strong>" + curAddress +"</strong><br>"+
-                "Postal Code: <strong>" + curPostalCode + "</strong> <br>"+
-                "City: <strong>" + curCity + "</strong> <br>"+
-                "State: <strong>" + curState + "</strong> <br>"+
-                "Country: <strong>" + curCountry + "</strong>" ));
+        if(addresses.size()>0) {
+            String curAddress = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+            String curCity = addresses.get(0).getLocality();
+            String curState = addresses.get(0).getAdminArea();
+            String curCountry = addresses.get(0).getCountryName();
+            String curPostalCode = addresses.get(0).getPostalCode();
+            mTxtCurLoc = findViewById(R.id.txtCurLoc);
+            mTxtCurLoc.setText(Html.fromHtml("<strong>Your Location Details</strong><br>Address : <strong>" + curAddress + "</strong><br>" +
+                    "Postal Code: <strong>" + curPostalCode + "</strong> <br>" +
+                    "City: <strong>" + curCity + "</strong> <br>" +
+                    "State: <strong>" + curState + "</strong> <br>" +
+                    "Country: <strong>" + curCountry + "</strong>"));
+        }
+        else {
+            Log.d("error","error");
+        }
     }
 
     private void getDistanceBetweenTwoPoints(double lat1,double lon1,double lat2,double lon2) {
