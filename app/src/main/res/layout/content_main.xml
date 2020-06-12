@@ -35,7 +35,6 @@
         android:padding="7dp"
         android:paddingStart="14dp"
         android:paddingLeft="14dp" />
-
     <ImageButton
         android:id="@+id/btn_locate"
         android:layout_width="wrap_content"
@@ -50,7 +49,6 @@
         android:background="@drawable/ovalbtn"
         android:padding="6dp"
         android:layout_marginRight="8dp" />
-
     <fragment
         android:id="@+id/map_fragment_container"
         android:layout_width="match_parent"
@@ -64,10 +62,7 @@
         app:layout_constraintBottom_toTopOf="@+id/txtDistance"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_address"
-        ></fragment>
-
-
+        app:layout_constraintTop_toBottomOf="@+id/et_address"/>
     <TextView
         android:id="@+id/txtDistance"
         android:layout_width="match_parent"
@@ -78,49 +73,283 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/map_fragment_container"
-        app:layout_constraintBottom_toTopOf="@+id/txtCurLoc"
+        app:layout_constraintBottom_toTopOf="@+id/tblData"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="4dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:layout_marginRight="4dp"
         android:layout_marginLeft="8dp"
-        android:gravity="center" />
-    
-    <TextView
-        android:id="@+id/txtCurLoc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Current Location"
-        android:textSize="18sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtDistance"
-        app:layout_constraintBottom_toTopOf="@+id/txtSerLoc"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginLeft="8dp"
-        android:gravity="start"
-        />
-        <TextView
-            android:id="@+id/txtSerLoc"
+        android:gravity="center"
+        android:background="@drawable/textblock"/>
+        <TableLayout
+            android:id="@+id/tblData"
+            xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Destination Address"
-            android:textSize="18sp"
+            android:stretchColumns="3"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtCurLoc"
-            app:layout_constraintBottom_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtDistance"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="4dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:layout_marginRight="4dp"
-            android:layout_marginLeft="8dp" />
-
+            android:layout_marginRight="8dp"
+            android:layout_marginLeft="8dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:background="@drawable/textblock">
+            <TableRow>
+                <TextView
+                    android:text="Your Location"
+                    android:padding="3dp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_span="2"
+                    android:layout_weight="1"
+                    android:textAlignment="center"
+                    android:gravity="center_horizontal"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimary"/>
+            </TableRow>
+            <TableRow>
+            <TextView
+                android:text="Address :"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight=".4"
+                android:gravity="right"
+                android:padding="3dp"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp"/>
+            <TextView
+                android:id="@+id/txtCurAddr"
+                android:text="--"
+                android:gravity="left"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight=".6"
+                android:textStyle="bold"
+                android:padding="3dp"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp"/>
+        </TableRow>
+            <TableRow>
+                <TextView
+                    android:text="Postal Code :"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight=".4"
+                    android:gravity="right"
+                    android:padding="3dp"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18sp"/>
+                <TextView
+                    android:id="@+id/txtCurPstCod"
+                    android:text="--"
+                    android:gravity="left"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight=".6"
+                    android:padding="3dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18sp"/>
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:text="City :"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight=".4"
+                    android:padding="3dp"
+                    android:gravity="right"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18sp"/>
+                <TextView
+                    android:id="@+id/txtCurCity"
+                    android:text="--"
+                    android:gravity="left"
+                    android:layout_height="wrap_content"
+                    android:padding="3dp"
+                    android:layout_width="0dp"
+                    android:layout_weight=".6"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18sp"/>
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:text="State :"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight=".4"
+                    android:padding="3dp"
+                    android:gravity="right"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18sp"/>
+                <TextView
+                    android:id="@+id/txtCurState"
+                    android:text="--"
+                    android:gravity="left"
+                    android:layout_height="wrap_content"
+                    android:padding="3dp"
+                    android:layout_width="0dp"
+                    android:layout_weight=".6"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18sp"/>
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:text="Country :"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight=".4"
+                    android:padding="3dp"
+                    android:gravity="right"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18sp"/>
+                <TextView
+                    android:id="@+id/txtCurCountry"
+                    android:text="--"
+                    android:gravity="left"
+                    android:layout_height="wrap_content"
+                    android:padding="3dp"
+                    android:layout_width="0dp"
+                    android:layout_weight=".6"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18sp"/>
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:text="Searched Location"
+                    android:padding="3dp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_span="2"
+                    android:layout_weight="1"
+                    android:textAlignment="center"
+                    android:gravity="center_horizontal"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimary"
+                    android:layout_marginTop="18dp"/>
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:text="Address :"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight=".4"
+                    android:gravity="right"
+                    android:padding="3dp"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18sp"/>
+                <TextView
+                    android:id="@+id/txtSerAddr"
+                    android:text="--"
+                    android:gravity="left"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight=".6"
+                    android:textStyle="bold"
+                    android:padding="3dp"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18sp"/>
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:text="Postal Code :"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight=".4"
+                    android:gravity="right"
+                    android:padding="3dp"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18sp"/>
+                <TextView
+                    android:id="@+id/txtSerPstCod"
+                    android:text="--"
+                    android:gravity="left"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight=".6"
+                    android:padding="3dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18sp"/>
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:text="City :"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight=".4"
+                    android:padding="3dp"
+                    android:gravity="right"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18sp"/>
+                <TextView
+                    android:id="@+id/txtSerCity"
+                    android:text="--"
+                    android:gravity="left"
+                    android:layout_height="wrap_content"
+                    android:padding="3dp"
+                    android:layout_width="0dp"
+                    android:layout_weight=".6"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18sp"/>
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:text="State :"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight=".4"
+                    android:padding="3dp"
+                    android:gravity="right"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18sp"/>
+                <TextView
+                    android:id="@+id/txtSerState"
+                    android:text="--"
+                    android:gravity="left"
+                    android:layout_height="wrap_content"
+                    android:padding="3dp"
+                    android:layout_width="0dp"
+                    android:layout_weight=".6"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18sp"/>
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:text="Country :"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight=".4"
+                    android:padding="3dp"
+                    android:gravity="right"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18sp"/>
+                <TextView
+                    android:id="@+id/txtSerCountry"
+                    android:text="--"
+                    android:gravity="left"
+                    android:layout_height="wrap_content"
+                    android:padding="3dp"
+                    android:layout_width="0dp"
+                    android:layout_weight=".6"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18sp"/>
+            </TableRow>
+        </TableLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

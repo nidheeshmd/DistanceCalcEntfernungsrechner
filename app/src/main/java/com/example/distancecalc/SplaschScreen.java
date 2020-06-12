@@ -12,6 +12,11 @@ public class SplaschScreen extends AppCompatActivity {
     public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
 
-        startActivity(new Intent(this,MainActivity.class));
+       // startActivity(new Intent(this,MainActivity.class));
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
+
+
     }
 }

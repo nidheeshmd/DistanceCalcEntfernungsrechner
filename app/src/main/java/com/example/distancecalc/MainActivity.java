@@ -68,11 +68,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public static final int DEFAULT_ZOOM = 15;
     private ImageButton mBtnLocate;
     private EditText mSearchAddress;
-    private TextView mTxtDistance, mTxtCurLoc, mTxtSerLoc;
+    private  TextView mTxtCurAddress, mTxtCurPstCode, mTxtCurCity, mTxtCurState, mTxtCurCountry, mTxtSerAddress, mTxtSerPstCode, mTxtSerCity, mTxtSerState, mTxtSerCountry, mTxtDistance;
     private FusedLocationProviderClient mLocationClient;
     private LocationCallback mLocationCallback;
     public double dblCurLan, dblCurLang, dblSerLan, dblSerLang;
     private int intFlag = 1 ;
+    int counter = 0,pagenoFil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,8 +86,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mBtnLocate.setOnClickListener(this::geoLocate);
         initGoogleMap();
         mLocationClient = new FusedLocationProviderClient(this);
-
-clearText();
+        clearText();
         mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -94,7 +94,6 @@ clearText();
                     return;
                 }
                 Location location = locationResult.getLastLocation();
-
                 setCurLoc(location.getLatitude(),location.getLongitude());
                 if(intFlag == 1) {
                     Log.d(TAG, "onLocationResult: " + location.getLatitude() + " \n" +
@@ -111,18 +110,26 @@ clearText();
 
     private void clearText()
     {
-        mTxtCurLoc = findViewById(R.id.txtCurLoc);
-        mTxtCurLoc.setText(Html.fromHtml("<strong>Your Location Details</strong><br>Address : <strong> -- </strong><br>" +
-                "Postal Code: <strong> -- </strong> <br>" +
-                "State: <strong> -- </strong> <br>" +
-                "Country: <strong>--</strong>" ));
-        mTxtCurLoc.setTextColor(Color.parseColor("#3867d6"));
-        mTxtSerLoc = findViewById(R.id.txtSerLoc);
-        mTxtSerLoc.setText(Html.fromHtml("<strong>Searched Location Details</strong><br>Address : <strong> -- </strong><br>" +
-                "Postal Code: <strong> -- </strong> <br>" +
-                "State: <strong> -- </strong> <br>" +
-                "Country: <strong>--</strong>" ));
-        mTxtSerLoc.setTextColor(Color.parseColor("#3867d6"));
+        mTxtCurAddress=findViewById(R.id.txtCurAddr);
+        mTxtCurPstCode=findViewById(R.id.txtCurPstCod);
+        mTxtCurCity=findViewById(R.id.txtCurCity);
+        mTxtCurState=findViewById(R.id.txtCurState);
+        mTxtCurCountry=findViewById(R.id.txtCurCountry);
+        mTxtSerAddress=findViewById(R.id.txtSerAddr);
+        mTxtSerPstCode=findViewById(R.id.txtSerPstCod);
+        mTxtSerCity=findViewById(R.id.txtSerCity);
+        mTxtSerState=findViewById(R.id.txtSerState);
+        mTxtSerCountry=findViewById(R.id.txtSerCountry);
+        mTxtCurAddress.setText("- -");
+        mTxtCurPstCode.setText("- -");
+        mTxtCurCity.setText("- -");
+        mTxtCurState.setText("- -");
+        mTxtCurCountry.setText("- -");
+        mTxtSerAddress.setText("- -");
+        mTxtSerPstCode.setText("- -");
+        mTxtSerCity.setText("- -");
+        mTxtSerState.setText("- -");
+        mTxtSerCountry.setText("- -");
         mTxtDistance = findViewById(R.id.txtDistance);
         mTxtDistance.setText(Html.fromHtml("<strong> 00.00 Kilometers </strong>"));
         mTxtDistance.setTextColor(Color.parseColor("#3867d6"));
@@ -154,12 +161,16 @@ clearText();
             String curState = addresses.get(0).getAdminArea();
             String curCountry = addresses.get(0).getCountryName();
             String curPostalCode = addresses.get(0).getPostalCode();
-            mTxtCurLoc = findViewById(R.id.txtCurLoc);
-            mTxtCurLoc.setText(Html.fromHtml("<strong>Your Location Details</strong><br>Address : <strong>" + curAddress + "</strong><br>" +
-                    "Postal Code: <strong>" + curPostalCode + "</strong> ," +
-                    "City: <strong>" + curCity + "</strong> <br>" +
-                    "State: <strong>" + curState + "</strong> ," +
-                    "Country: <strong>" + curCountry + "</strong>"));
+            mTxtCurAddress=findViewById(R.id.txtCurAddr);
+            mTxtCurPstCode=findViewById(R.id.txtCurPstCod);
+            mTxtCurCity=findViewById(R.id.txtCurCity);
+            mTxtCurState=findViewById(R.id.txtCurState);
+            mTxtCurCountry=findViewById(R.id.txtCurCountry);
+            mTxtCurAddress.setText(curAddress);
+            mTxtCurPstCode.setText(curPostalCode);
+            mTxtCurCity.setText(curCity);
+            mTxtCurState.setText(curState);
+            mTxtCurCountry.setText(curCountry);
         }
         else {
             Log.d("error","error");
@@ -183,7 +194,6 @@ clearText();
     private void geoLocate(View view) {
         hideSoftKeyboard(view);
         String locationName = mSearchAddress.getText().toString();
-
         Geocoder geocoder = new Geocoder(this, Locale.GERMANY);
         try {
             if(locationName.length() >= 3){
@@ -199,16 +209,19 @@ clearText();
                 String SerState = address.getAdminArea();
                 String SerCountry = address.getCountryName();
                 String SerPostalCode = address.getPostalCode();
-                mTxtSerLoc = findViewById(R.id.txtSerLoc);
-                mTxtSerLoc.setText(Html.fromHtml("<strong>Searched Location Details</strong><br>Address : <strong>" + SerAddress + "</strong><br>" +
-                        "Postal Code: <strong>" + SerPostalCode + "</strong>, " +
-                        "City: <strong>" + SerCity + "</strong> <br>" +
-                        "State: <strong>" + SerState + "</strong> ," +
-                        "Country: <strong>" + SerCountry + "</strong>"));
+                mTxtSerAddress=findViewById(R.id.txtSerAddr);
+                mTxtSerPstCode=findViewById(R.id.txtSerPstCod);
+                mTxtSerCity=findViewById(R.id.txtSerCity);
+                mTxtSerState=findViewById(R.id.txtSerState);
+                mTxtSerCountry=findViewById(R.id.txtSerCountry);
+                mTxtSerAddress.setText(SerAddress);
+                mTxtSerPstCode.setText(SerPostalCode);
+                mTxtSerCity.setText(SerCity);
+                mTxtSerState.setText(SerState);
+                mTxtSerCountry.setText(SerCountry);
                 getDistanceBetweenTwoPoints(dblCurLan, dblCurLang, dblSerLan, dblSerLang);
                 Log.d(TAG, "geoLocate: Locality: " + address.getAddressLine(0) + "," + address.getLocality() + "," + address.getSubLocality() + "," + address.getCountryName());
             }
-
             }
             else{
                 Toast.makeText(MainActivity.this,
@@ -301,15 +314,6 @@ clearText();
         return false;
     }
 
-    /*private void requestLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-               requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
-            }
-        }
-    }*/
-
     private void requestLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -339,19 +343,6 @@ clearText();
         return super.onOptionsItemSelected(item);
     }
 
-
-    /*@Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == PERMISSION_REQUEST_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            mLocationPermissionGranted = true;
-            Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show();
-        }
-    }*/
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -361,7 +352,7 @@ clearText();
                     mLocationPermissionGranted = true;
                     Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -379,6 +370,24 @@ clearText();
             } else {
                 Toast.makeText(this, "GPS not enabled. Unable to show user location", Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        if (counter <= 0) {
+            Toast.makeText(this, "Press back once more to exit app", Toast.LENGTH_SHORT).show();
+            counter++;
+        } else {
+
+            Intent startMain = new Intent(Intent.ACTION_MAIN);
+            startMain.addCategory(Intent.CATEGORY_HOME);
+            startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(startMain);
+            finish();
+            System.exit(0);
         }
     }
 
